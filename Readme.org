@@ -4,3 +4,95 @@
  - If you have [[http://www.marmalade-repo.org/][marmalade-repo.org]], this speedread is part of the emacs packages you can install.  Just type M-x package-install speedread marmalade 
  - Otherwise download the library from here Lisp:speedread, and put it in a directory in the emacs load path, like ~/.emacs.d
  - Add (require 'speedread) in your ~/.emacs file
+
+* Commentary
+Concept: load a (text) file into a buffer for speedreading.
+
+Position the cursor to the point at which you wish to start
+reading and give the command
+
+M-x speedread
+
+The file will be displayed to you in the echo area (!) a bit
+at a time, in "flashes" with a delay between each flash.  The
+customization variables control the minimum size (in
+characters) of each flash group, and the pause between groups.
+
+After a certain number of groups have been displayed (there is
+a customization variable for this too) there is a 'hard' pause.
+This is quite necessary to avoid incredible eye fatigue!  
+
+At this point you can continue reading, stop, or change some
+reading parameters.  To continue, press spacebar or the ENTER key.
+To quit, type 'q' to quit and save your place with a bookmark,
+or 'e' to exit speed-reading without saving your current place.
+(Side effect: all bookmarks get saved, not just this one.  Be
+aware.)  The commands described immediately below are also active.
+'?' or 'h' will get you a help screen.
+
+Rather than waiting for a pause between flashes, if you like,
+you can alter the speed, the flash group size, or the number of flashes
+on-the-fly at just about any time.  
+
+When starting a speedread session, if a bookmark exists you are
+asked if you wish to use it.  If you choose not to use it, the
+display starts at the current cursor position.
+
+Newline characters are converted to spaces.  This causes a little
+weirdness at times but leaving newlines intact makes a big mess.
+
+Again, tune the display parameters!  You may find that as your
+speed-reading skills improve you can increase the number of
+characters in a flash group, and/or decrease the pause time
+between groups.
+
+Project Gutenberg is a fabulous source of texts to use.
+
+** Tuning
+Since speed is very much system dependent these params
+MUST be fine-tuned to get any sort of acceptable results.
+Advice: do it on-the-fly and then when you get what you like
+save as permanent customized values.
+Set the size of the flash group and the delay between groups.
+
+** Keybindings
+ 
+- 'f' : to go 20% faster,
+- 's' : to go 20% slower,
+- 'w' : to widen the flash group 20%,
+- 'n' : to narrow it 20%,
+- 'm' : for 20% more flashes between pauses,
+- 'l' : for 20% less flashes between pauses,
+- 'b' : to go back and repeat the current set of flashes,
+- 'r' : to completely restart from whatever point in the buffer you began the session.
+- 'q' : to quit and save the bookmark at point;
+- 'e' : to exit without saving the bookmark.
+
+** Commands
+Below are complete command list:
+
+- `speedread' : Speedread a buffer by timed flashing of groups of words in the echo area
+- `speedread-faster' : Increase reading speed temporarily
+- `speedread-narrower' : Narrow flash-group temporarily
+- `speedread-help' : Get speedreading command help
+- `speedread-save-changes' : save all customization variables changed this Emacs session
+
+** Comments
+
+The parameters 'out of the box' tend to result in roughly 600 words
+per minute.  This is probably too fast for many people; adjust to suit.
+Don't attempt too much speed initially or you will become very
+frustrated and probably give up.  As you learn how to work with
+the technique you can build up the speed and the flash group size.
+On the other hand, push yourself a little.  Go as fast as you can
+without losing comprehension.  Different types of reading material
+will require different speed settings!  You can read a scifi novel
+faster than you can read existential philosophy.
+
+Your comments on both speed-reading, the flash technique, and the
+program itself are welcome.  Write
+
+chungkuo@chungkuo.org
+
+I also have a Perl version of similar (older, less functional) code.  
+If you want it let me know.
