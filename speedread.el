@@ -1,248 +1,347 @@
-;;; Read all of the documentation text below before doing anything!
+;;; speedread.el --- Aid for speedreading emacs buffers
 
-;;; This program is originally Copyright (C) 2004 by Bob Newell.
-;;; The copyright has been assigned to the Free Software Foundation.
+;; Filename: speedread.el
+;; Description: Aid for speedreading emacs buffers
+;; Author: Bob Newell <chungkuo@chungkuo.org>
+;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
+;; Copyright 2004, Bob Newell
+;; Created: 2004 - Bob Newell
+;; Version: 0.1
+;; Last-Updated: 2013-05-12 03:05:02
+;;           By: Joe Bloggs
+;; URL: https://github.com/vapniks/speedread
+;; Keywords: help
+;; Compatibility: GNU Emacs 24.3.1
+;; Package-Requires: 
+;;
+;; Features that might be required by this library:
+;;
+;; 
+;;
 
-;;; The code may be used freely and without restriction by anyone,
-;;; but no rights of ownership are granted, conceded, or relinquished
-;;; by the copyright holders or the author.
+;;; This file is NOT part of GNU Emacs
 
-;;; Tested on Emacs 20/21 on Win98/Linux.  Win XP not tested; should work.
-;;; Emacs 19 or lower will *not* work.  Xemacs unknown.  Macintosh
-;;; unknown.
-;;;
-;;; PRIOR TO BYTE-COMPILING YOU MUST LOAD THE BOOKMARK PACKAGE!
+;;; License
+;;
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
 
-;;; M-x bookmark-load
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
 
-;;; will do this for you.  For performance reasons you really MUST
-;;; use in byte-compiled form.  You also MUST fine-tune the
-;;; customization variables.  These are in the customization group
-;;; 'speedread' in the 'local' customization section.
-;;;
-;;; When compiling ignore any warnings; hopefully I've found most
-;;; of these by now in any case.
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.
+;; If not, see <http://www.gnu.org/licenses/>.
 
-;;; Concept: load a (text) file into a buffer for speedreading.
-;;; Be sure this package is loaded just as you would load any other
-;;; package.  Put a 'load-library' command in your .emacs file if
-;;; you wish to make this easier.  Load the byte-compiled version!
+;;; Commentary: 
+;;
+;; Read all of the documentation text below before doing anything!
 
-;;; Position the cursor to the point at which you wish to start
-;;; reading and give the command
+;; This program is originally Copyright (C) 2004 by Bob Newell.
+;; The copyright has been assigned to the Free Software Foundation.
 
-;;; M-x speedread
+;; The code may be used freely and without restriction by anyone,
+;; but no rights of ownership are granted, conceded, or relinquished
+;; by the copyright holders or the author.
 
-;;; The file will be displayed to you in the echo area (!) a bit
-;;; at a time, in "flashes" with a delay between each flash.  The
-;;; customization variables control the minimum size (in
-;;; characters) of each flash group, and the pause between groups.
 
-;;; After a certain number of groups have been displayed (there is
-;;; a customization variable for this too) there is a 'hard' pause.
-;;; This is quite necessary to avoid incredible eye fatigue!  
+;; Concept: load a (text) file into a buffer for speedreading.
+;; Be sure this package is loaded just as you would load any other
+;; package.  Put a 'load-library' command in your .emacs file if
+;; you wish to make this easier.  Load the byte-compiled version!
 
-;;; At this point you can continue reading, stop, or change some
-;;; reading parameters.  To continue, press spacebar or the ENTER key.
-;;; To quit, type 'q' to quit and save your place with a bookmark,
-;;; or 'e' to exit speed-reading without saving your current place.
-;;; (Side effect: all bookmarks get saved, not just this one.  Be
-;;; aware.)  The commands described immediately below are also active.
-;;; '?' or 'h' will get you a help screen.
+;; Position the cursor to the point at which you wish to start
+;; reading and give the command
 
-;;; Rather than waiting for a pause between flashes, if you like,
-;;; you can alter the speed, the flash group size, or the number of flashes
-;;; on-the-fly at just about any time.  Type the single  keystrokes
+;; M-x speedread
 
-;;;   'f' to go 20% faster,
-;;;   's' to go 20% slower,
-;;; '  w' to widen the flash group 20%,
-;;;   'n' to narrow it 20%,
-;;;   'm' for 20% more flashes between pauses,
-;;;   'l' for 20% less flashes between pauses,
-;;;   'b' to go back and repeat the current set of flashes,
-;;;   'r' to completely restart from whatever point in the buffer
-;;;       you began the session.
-;;;   'q' to quit and save the bookmark at point;
-;;;   'e' to exit without saving the bookmark.
+;; The file will be displayed to you in the echo area (!) a bit
+;; at a time, in "flashes" with a delay between each flash.  The
+;; customization variables control the minimum size (in
+;; characters) of each flash group, and the pause between groups.
 
-;;; When starting a speedread session, if a bookmark exists you are
-;;; asked if you wish to use it.  If you choose not to use it, the
-;;; display starts at the current cursor position.
+;; After a certain number of groups have been displayed (there is
+;; a customization variable for this too) there is a 'hard' pause.
+;; This is quite necessary to avoid incredible eye fatigue!  
 
-;;; Newline characters are converted to spaces.  This causes a little
-;;; weirdness at times but leaving newlines intact makes a big mess.
+;; At this point you can continue reading, stop, or change some
+;; reading parameters.  To continue, press spacebar or the ENTER key.
+;; To quit, type 'q' to quit and save your place with a bookmark,
+;; or 'e' to exit speed-reading without saving your current place.
+;; (Side effect: all bookmarks get saved, not just this one.  Be
+;; aware.)  The commands described immediately below are also active.
+;; '?' or 'h' will get you a help screen.
 
-;;; Again, tune the display parameters!  You may find that as your
-;;; speed-reading skills improve you can increase the number of
-;;; characters in a flash group, and/or decrease the pause time
-;;; between groups.
+;; Rather than waiting for a pause between flashes, if you like,
+;; you can alter the speed, the flash group size, or the number of flashes
+;; on-the-fly at just about any time.  
 
-;;; Project Gutenberg is a fabulous source of texts to use.
+;;; Keybindings:
+;;
+;;   'f' to go 20% faster,
+;;   's' to go 20% slower,
+;;   'w' to widen the flash group 20%,
+;;   'n' to narrow it 20%,
+;;   'm' for 20% more flashes between pauses,
+;;   'l' for 20% less flashes between pauses,
+;;   'b' to go back and repeat the current set of flashes,
+;;   'r' to completely restart from whatever point in the buffer
+;;       you began the session.
+;;   'q' to quit and save the bookmark at point;
+;;   'e' to exit without saving the bookmark.
 
-;;; COMMENTS
+;; When starting a speedread session, if a bookmark exists you are
+;; asked if you wish to use it.  If you choose not to use it, the
+;; display starts at the current cursor position.
 
-;;;  At first I thought I should somehow hide the main buffer display
-;;;  or find a better way to flash the text than through the
-;;;  echo area, which seems lame in concept - but actually easy and
-;;;  relativey fast.  And speed really matters here; code execution
-;;;  time is effectively added to pause time.  This of course can
-;;;  lead to unpredictable results especially on heavily loaded systems.
-;;;  As to hiding the main buffer display, this turns out not to be all
-;;;  that distracting, as your attention is tightly focused (and I do
-;;;  mean tightly) on the echo area.
+;; Newline characters are converted to spaces.  This causes a little
+;; weirdness at times but leaving newlines intact makes a big mess.
 
-;;;  The parameters 'out of the box' tend to result in roughly 600 words
-;;;  per minute.  This is probably too fast for many people; adjust to suit.
-;;;  Don't attempt too much speed initially or you will become very
-;;;  frustrated and probably give up.  As you learn how to work with
-;;;  the technique you can build up the speed and the flash group size.
-;;;  On the other hand, push yourself a little.  Go as fast as you can
-;;;  without losing comprehension.  Different types of reading material
-;;;  will require different speed settings!  You can read a scifi novel
-;;;  faster than you can read existential philosophy.
+;; Again, tune the display parameters!  You may find that as your
+;; speed-reading skills improve you can increase the number of
+;; characters in a flash group, and/or decrease the pause time
+;; between groups.
 
-;;;  Your comments on both speed-reading, the flash technique, and the
-;;;  program itself are welcome.  Write
+;; Project Gutenberg is a fabulous source of texts to use.
 
-;;;  chungkuo@chungkuo.org
+;; COMMENTS
 
-;;;  I also have a Perl version of similar (older, less functional) code.  
-;;;  If you want it let me know.
+;;  The parameters 'out of the box' tend to result in roughly 600 words
+;;  per minute.  This is probably too fast for many people; adjust to suit.
+;;  Don't attempt too much speed initially or you will become very
+;;  frustrated and probably give up.  As you learn how to work with
+;;  the technique you can build up the speed and the flash group size.
+;;  On the other hand, push yourself a little.  Go as fast as you can
+;;  without losing comprehension.  Different types of reading material
+;;  will require different speed settings!  You can read a scifi novel
+;;  faster than you can read existential philosophy.
 
-;;; REVISION LOG
-;;;
-;;; 13 oct 2004 Fixed severe bug with % character in flash group, can't
-;;;             imagine this wasn't found earlier.  Changed 'minibuffer'
-;;;             terminology to more accurate 'echo area'.  Strange echo
-;;;             bug reappeared; hope the % fix killed it but not certain.
-;;;             Alpha 0.22.
-;;; 03 sep 2004 Remove spaces at front of a flash group.  
-;;;             Seemingly fixed strange minibuffer echo bug; still not so
-;;;             sure though.  
-;;;             Fixed most if not all free-variable compiler complaints.
-;;;             Moved speedread customization group out of local group,
-;;;             making an incompatibility with prior releases.
-;;;             Changed bookmarking to use bookmark-buffer-file-name,
-;;;             also incompatible with previous releases.
-;;;             Attempted to fix leading punctuation problem by changing
-;;;             forward-word method to search-forward-regexp.  It's not a
-;;;             complete solution but seems to help a lot.
-;;;             Changed to fixed delay when end of buffer is reached.
-;;;              Alpha 0.21 (release version)
-;;; 01 sep 2004 Incorporated additional ideas from Joakim to
-;;;             allow command entry at any time, not just at
-;;;             major pauses.  Required extensive changes to the
-;;;             previous alpha.  Added comments and improved
-;;;             legibility.  Still some bugs.
-;;;              Alpha 0.20 (not for public release yet)
-;;; 12 aug 2004 Major rev to include commands to change params
-;;;             temporarily on the fly, and all the supporting
-;;;             code to go with it, plus doc revs, help screen,
-;;;             etc etc.  Thanks to Joakim Verona for numerous
-;;;             good ideas for improved functionality.
-;;;             This is close to a rewrite.
-;;;             Added speedread-save-changes to save any altered
-;;;             customization variables.
-;;;              Alpha 0.10 (not for public release yet)
-;;; 06 aug 2004 Added summary statistics per user input.
-;;;              Alpha 0.03
-;;; 30 jul 2004 Changed, reordered, added to documentation.
-;;;             Fixed a few > col 80 line wraps in source code.
-;;;             Minor prompt change.
-;;;              Alpha 0.02
-;;; 29 jul 2004 Santa Fe, New Mexico.  Initial release.
-;;;              Alpha 0.01
+;;  Your comments on both speed-reading, the flash technique, and the
+;;  program itself are welcome.  Write
+
+;;  chungkuo@chungkuo.org
+
+;;  I also have a Perl version of similar (older, less functional) code.  
+;;  If you want it let me know.
+
+;; 
+;;;;
+
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `speedread'
+;;    Speedread a buffer by timed flashing of groups of words in the echo area
+;;  `speedread-faster'
+;;    Increase reading speed temporarily
+;;  `speedread-narrower'
+;;    Narrow flash-group temporarily
+;;  `speedread-help'
+;;    Get speedreading command help
+;;  `speedread-save-changes'
+;;    save all customization variables changed this Emacs session
+;;
+
+
+;;; Installation:
+;;
+;; Put speedread.el in a directory in your load-path, e.g. ~/.emacs.d/
+;; You can add a directory to your load-path with the following line in ~/.emacs
+;; (add-to-list 'load-path (expand-file-name "~/elisp"))
+;; where ~/elisp is the directory you want to add 
+;; (you don't need to do this for ~/.emacs.d - it's added by default).
+;;
+;; Add the following to your ~/.emacs startup file.
+;;
+;; (require 'speedread)
+
+;; For performance reasons it's recommended that you byte-compile the file.
+;; This can be achieved using the byte-compile-file command.
+;; When compiling ignore any warnings; hopefully I've found most
+;; of these by now in any case.
+
+;; You should also fine-tune the customization variables to optimize performance.
+;; These are shown below.
+
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `speedread-chars'
+;;    Minimum characters per flash group (an integer)
+;;    default = 20
+;;  `speedread-delay-milliseconds'
+;;    Milliseconds of delay between flashes (an integer)
+;;    default = 300
+;;  `speedread-end-sentence-delay-milliseconds'
+;;    Pause between sentences in milliseconds (an integer)
+;;    default = 500
+;;  `speedread-final-delay-milliseconds'
+;;    Milliseconds to wait before exiting after reaching end of buffer
+;;    default = 2000
+;;  `speedread-top-window-size'
+;;    How much of the frame to use for displaying the original buffer whilst speedreading.
+;;    default = 5
+;;  `speedread-font-size-scale-factor'
+;;    Scale factor for size of font
+;;    default = 2.0
+;;  `speedread-text-justification'
+;;    Justification of text in speedread buffer.
+;;    default = (quote center)
+;;  `speedread-end-sentence-regexp'
+;;    Regular expression to match with end of sentence words.
+;;    default = "\\(\\.\\|\\:\\)\\(\n\\|>\\|)\\|'\\|\"\\)*$"
+
+;; All of the above can customized by:
+;;      M-x customize-group RET speedread RET
+;;
+
+;;; Change log:
+;;
+;; 12/05/2013
+;;      * Tidy up code and documentation - Joe Bloggs
+;;
+;;
+;; 22/09/2008
+;;      * Added the following commands: `speedread-toggle-pause'
+;;        `speedread-next-line' `speedread-previous-line' `speedread-get-previous-flash-line'
+;;        `speedread-get-previous-flash-line' - Joe Bloggs
+;;      * Change variable names to begin with speedread instead of iread - Joe Bloggs
+;;
+;; 13/10/2004
+;;      * Fixed severe bug with % character in flash group, can't
+;;        imagine this wasn't found earlier.  Changed 'minibuffer'
+;;        terminology to more accurate 'echo area'.  Strange echo
+;;        bug reappeared; hope the % fix killed it but not certain.
+;;        Alpha 0.22.
+;; 03/09/2004
+;;      * Remove spaces at front of a flash group.  
+;;        Seemingly fixed strange minibuffer echo bug; still not so
+;;        sure though.  
+;;        Fixed most if not all free-variable compiler complaints.
+;;        Moved speedread customization group out of local group,
+;;        making an incompatibility with prior releases.
+;;        Changed bookmarking to use bookmark-buffer-file-name,
+;;        also incompatible with previous releases.
+;;        Attempted to fix leading punctuation problem by changing
+;;        forward-word method to search-forward-regexp.  It's not a
+;;        complete solution but seems to help a lot.
+;;        Changed to fixed delay when end of buffer is reached.
+;;         Alpha 0.21 (release version)
+;; 01/09/2004
+;;      * Incorporated additional ideas from Joakim to
+;;        allow command entry at any time, not just at
+;;        major pauses.  Required extensive changes to the
+;;        previous alpha.  Added comments and improved
+;;        legibility.  Still some bugs.
+;;        Alpha 0.20 (not for public release yet)
+;; 12/08/2004
+;;      * Major rev to include commands to change params
+;;        temporarily on the fly, and all the supporting
+;;        code to go with it, plus doc revs, help screen,
+;;        etc etc.  Thanks to Joakim Verona for numerous
+;;        good ideas for improved functionality.
+;;        This is close to a rewrite.
+;;        Added speedread-save-changes to save any altered
+;;        customization variables.
+;;        Alpha 0.10 (not for public release yet)
+;; 06/08/2004
+;;      * Added summary statistics per user input.
+;;        Alpha 0.03
+;; 30/07/2004
+;;      * Changed, reordered, added to documentation.
+;;        Fixed a few > col 80 line wraps in source code.
+;;        Minor prompt change.
+;;        Alpha 0.02
+;; 29/072004
+;;      * Santa Fe, New Mexico.  Initial release.
+;;        Alpha 0.01
+
+
+;;; Acknowledgements:
+;;
+;; Bob Newell - original author
+;;
+
+;;; TODO
+;;
+;;  * Maybe bookmark to a 'speedread' file rather than default file?
+;;
 
 ;;; UNRESOLVED KNOWN BUGS/ISSUES
 
-;;;  BUGS
-;;;  * The bookmark is not found unless the bookmark file has been
-;;;    preloaded.
-;;;  * In X-windows, moving focus out of the window during flashing
-;;;    causes problems.
+;;  BUGS
+;;  * The bookmark is not found unless the bookmark file has been
+;;    preloaded.
+;;  * In X-windows, moving focus out of the window during flashing
+;;    causes problems.
 
-;;;  ISSUES/COMMENTS
-;;;  * There is no symmetry in increasing/decreasing rates, counts,
-;;;    etc.  If you increase speed 20% and then decrease speed 20%
-;;;    you end up at 96% of original speed, for example.
-;;;  * Temporary changes are not saved and can be hard to reproduce.
-;;;  * Pause time when waiting for command/continuation input is not
-;;;    counted against the reading time.  I don't think it should be,
-;;;    though.
+;;  ISSUES/COMMENTS
+;;  * There is no symmetry in increasing/decreasing rates, counts,
+;;    etc.  If you increase speed 20% and then decrease speed 20%
+;;    you end up at 96% of original speed, for example.
+;;  * Temporary changes are not saved and can be hard to reproduce.
+;;  * Pause time when waiting for command/continuation input is not
+;;    counted against the reading time.  I don't think it should be,
+;;    though.
 
-;;; TODO LIST/IDEAS
-;;;  * Maybe bookmark to a 'speedread' file rather than default file?
+;;; Require
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; user-configurable stuff here
-;;
-;; since speed is very much system dependent these params
-;; MUST be fine-tuned to get any sort of acceptable results
-;; advice: do it on-the-fly and then when you get what you like
-;; save as permanent customized values
+;;; Code:
 
-;; set the size of the flash group and the delay between groups
+;; Make sure bookmarks are loaded when compiling file.
+(eval-when-compile (bookmark-load bookmark-default-file))
 
 (defgroup speedread nil
-  "Speed reading customization variables"
-  )
-
-;; NOTE: I HAVE CHANGED ALL VARIABLES AND FUNCTIONS TO START WITH
-;; "speedread-" INSTEAD OF "iread-"
-;; Ben Veal - 22/09/2008
+  "Speed reading customization variables")
 
 (defcustom speedread-chars 20
   "Minimum characters per flash group (an integer)"
-  :group 'speedread
-  )
+  :group 'speedread)
+
 (defcustom speedread-delay-milliseconds 300
   "Milliseconds of delay between flashes (an integer)"
-  :group 'speedread
-  )
+  :group 'speedread)
+
 (defcustom speedread-end-sentence-delay-milliseconds 500
   "Pause between sentences in milliseconds (an integer)"
-  :group 'speedread
-  )
+  :group 'speedread)
+
 (defcustom speedread-final-delay-milliseconds 2000
   "Milliseconds to wait before exiting after reaching end of buffer
  (an integer)"
-  :group 'speedread
-  )
+  :group 'speedread)
+
 (defcustom speedread-top-window-size 5
   "How much of the frame to use for displaying the original buffer whilst speedreading.
 Can be an integer greater than 0 or any number between 0 and 1.
 An integer greater than 0 indicates the number of lines to use.
 Whereas a number between 0 and 1 indicates the fraction of the frame to use."
-  :group 'speedread
-  )
+  :group 'speedread)
+
 (defcustom speedread-font-size-scale-factor 2.0
   "Scale factor for size of font"
-  :group 'speedread
-  )
+  :group 'speedread)
+
 (defcustom speedread-text-justification 'center
   "Justification of text in speedread buffer.
-Can be: left, right, full, center or none."
-  )
+Can be: left, right, full, center or none.")
+
 (defcustom speedread-end-sentence-regexp "\\(\\.\\|\\:\\)\\(\n\\|\>\\|)\\|'\\|\"\\)*$"
   "Regular expression to match with end of sentence words."
-  :group 'speedread
-  )
+  :group 'speedread)
 
-
-
-;; MAIN FUNCTION
-
-(defun speedread ()
+;; MAIN COMMAND
+(defun speedread nil
   "Speedread a buffer by timed flashing of groups of words in the echo area"
   (interactive)
-  
-  (require 'bookmark)
-
   ;; stuff to avoid at least some of the free variable complaints
-
   (defvar speedread-average)
   (defvar speedread-bookmark)
   (defvar speedread-chars)
@@ -260,11 +359,8 @@ Can be: left, right, full, center or none."
   (defvar speedread-words-recent)
   (defvar speedread-buffer-name)
   (defvar speedread-buffer-raise-value)
-
   ;; vector definition for asynchronous command processing
-
   (defvar speedread-command-vector nil)
-
   (setq  speedread-command-vector (make-vector 256 'speedread-toggle-pause))
   (aset  speedread-command-vector ?q 'speedread-quit)
   (aset  speedread-command-vector ?e 'speedread-exit)
@@ -282,19 +378,13 @@ Can be: left, right, full, center or none."
   (aset  speedread-command-vector 255 'speedread-get-previous-flash-line)  
   (aset  speedread-command-vector 252 'speedread-next-line)  
   (aset  speedread-command-vector 253 'speedread-previous-line)  
-     
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
   ;; look for a bookmark and optionally go there
   ;; if we don't go there start at point
-
   (if (and bookmark-current-bookmark
-           (setq speedread-bookmark h(bookmark-get-position bookmark-current-bookmark)))
+           (setq speedread-bookmark (bookmark-get-position bookmark-current-bookmark)))
       (if (yes-or-no-p "Bookmark exists, use it? ")
 	  (goto-char speedread-bookmark)))
-     
   ;; initialize
-
   (setq speedread-count 0)
   (setq speedread-flash-line nil)
   (setq speedread-flash-length 0)
@@ -306,10 +396,7 @@ Can be: left, right, full, center or none."
   (setq speedread-words-read 0)
   (setq speedread-words-recent 0)
   (setq speedread-continue t)
-
-
   ;; setup speedread buffer
-
   (setq speedread-buffer-name (concat "*Speedread - " (buffer-name) "*"))
   (switch-to-buffer-other-window speedread-buffer-name)
   (setq cursor-type nil)
@@ -321,7 +408,6 @@ Can be: left, right, full, center or none."
   ;; go back to original buffer window and turn of cursor blinking
   (other-window 1)
   (if blink-cursor-mode (blink-cursor-mode))
-
   (catch 'iread
     ;; get next flash line (unless we are at the end of the buffer)
     (while (setq speedread-results (speedread-get-next-flash-line)
@@ -329,11 +415,9 @@ Can be: left, right, full, center or none."
 		 speedread-end-sentence (nth 2 speedread-results)
 		 ;; this must be last setq, to indicate when we are at end of buffer
 		 speedread-flash-line (car speedread-results))
-	
       ;; after flashing group check and process pending input, ONE
       ;; command letter only - otherwise multiple or repeat keypresses
       ;; could create havoc
-
       (if (input-pending-p)
 	  (let ((keyinput (read-event)))
 	    (if (not (integerp keyinput))
@@ -342,21 +426,15 @@ Can be: left, right, full, center or none."
 		    (if (equal keyinput 'up) (setq keyinput 253)
 		      (if (equal keyinput 'down) (setq keyinput 252))))))
 	    (funcall (aref speedread-command-vector keyinput))))
-
       ;; flush anything extra beyond a single char
-
       (while (input-pending-p) (read-event))
-
       ;; then do the between-flash pause
       (if speedread-end-sentence 
 	  (sleep-for 0 speedread-end-sentence-delay-milliseconds)
 	(sleep-for 0 speedread-delay-milliseconds))
-      
       (setq speedread-flash-line nil)
       (setq speedread-flash-length 0)
-      (setq speedread-count (1+ speedread-count))
-      )
-
+      (setq speedread-count (1+ speedread-count)))
     ;; We have reached the end of the file.  
     ;; We still have a little bit undisplayed, so show it and then we're done.
     (setq speedread-flash-line (buffer-substring speedread-mark (point-max)))   
@@ -365,9 +443,7 @@ Can be: left, right, full, center or none."
 				(string-to-char " ") speedread-flash-line))
     ;; trim whitespace from start and end of speedread-flash-line 
     (setq speedread-flash-line (replace-regexp-in-string "^\\s-*\\|\\s-*$" "" speedread-flash-line))
-
     ;; print final flash line and message to indicate end of buffer
-
     (with-current-buffer speedread-buffer-name 
       (erase-buffer)
       ;; print the flash line to the speedread buffer
@@ -375,7 +451,8 @@ Can be: left, right, full, center or none."
       (add-text-properties
        ;; set size and position, and other properties of text
        1 (+ (length speedread-flash-line) 1)
-       (list 'face (list :foreground "white" :background "black" :height speedread-font-size-scale-factor) 'display (list 'raise speedread-buffer-raise-value))
+       (list 'face (list :foreground "white" :background "black" :height speedread-font-size-scale-factor)
+             'display (list 'raise speedread-buffer-raise-value))
        (get-buffer speedread-buffer-name))
       (justify-current-line speedread-text-justification)
       (princ "\n\n\n(END OF BUFFER)" (get-buffer speedread-buffer-name))
@@ -385,27 +462,23 @@ Can be: left, right, full, center or none."
        (list 'face (list :foreground "white" :background "black" :height 1.0))
        (get-buffer speedread-buffer-name))
       (justify-current-line 'speedread-text-justification))
-
     ;; update window and redisplay
     (force-window-update (get-buffer speedread-buffer-name))
     (redisplay)
-
     ;; Show closeout stats.
     (setq speedread-time-used
 	  (+ speedread-time-used (/ (- (float-time) speedread-time-now) 60) ))
     (setq speedread-average (/ speedread-words-read speedread-time-used))
     (message (format "%d words read in %6.2f minutes; %6.1f words per minute."
 		     speedread-words-read speedread-time-used speedread-average))
-
     ;; pause then exit
     (sleep-for 0 speedread-final-delay-milliseconds)
-    (speedread-exit)
-    )
-  ) ;; end of mainline speedread
+    (speedread-exit)))
+;; END OF SPEEDREAD COMMAND
 
 ;; the throws work here even though I thought they should not !?
 
-(defun speedread-quit ()
+(defun speedread-quit nil
   "quit and save bookmark"
   (if (not blink-cursor-mode) (blink-cursor-mode))
   (bookmark-set (bookmark-buffer-file-name))
@@ -414,59 +487,56 @@ Can be: left, right, full, center or none."
   (delete-other-windows)
   (throw 'iread t))
 
-(defun speedread-exit ()
+(defun speedread-exit nil
   "quit and don't save bookmark"
   (if (not blink-cursor-mode) (blink-cursor-mode))
   (kill-buffer speedread-buffer-name)
   (delete-other-windows)
   (throw 'iread t))
 
-(defun speedread-do-continue ()
+(defun speedread-do-continue nil
   "continue reading now"
-  (setq speedread-continue t)
-  )
+  (setq speedread-continue t))
 
-(defun speedread-faster ()
+(defun speedread-faster nil
   "Increase reading speed temporarily"
   (interactive)
-  (setq speedread-delay-milliseconds (truncate (* 0.8 speedread-delay-milliseconds)))
-  )
+  (setq speedread-delay-milliseconds
+        (truncate (* 0.8 speedread-delay-milliseconds))))
 
-(defun speedread-slower ()
+(defun speedread-slower nil
   "Decrease reading speed temporarily"
-  (setq speedread-delay-milliseconds (truncate (* 1.2 speedread-delay-milliseconds)))
-  )
+  (setq speedread-delay-milliseconds
+        (truncate (* 1.2 speedread-delay-milliseconds))))
 
-(defun speedread-wider ()
+(defun speedread-wider nil
   "Widen flash group temporarily"
-  (setq speedread-chars (truncate (* 1.2 (float speedread-chars))))
-  )
+  (setq speedread-chars
+        (truncate (* 1.2 (float speedread-chars)))))
 
-(defun speedread-narrower ()
+(defun speedread-narrower nil
   "Narrow flash-group temporarily"
   (interactive)
-  (setq speedread-chars (truncate (* 0.8 (float speedread-chars))))
-  )
+  (setq speedread-chars
+        (truncate (* 0.8 (float speedread-chars)))))
 
-(defun speedread-back ()
+(defun speedread-back nil
   "Re-read last full set of flash groups"
   (goto-char speedread-group-start)
   (setq speedread-words-read (- speedread-words-read speedread-words-recent))
   (setq speedread-words-recent 0)
   (setq speedread-mark (point))
-  (setq speedread-continue t)
-  )
+  (setq speedread-continue t))
 
-(defun speedread-restart ()
+(defun speedread-restart nil
   "Restart from session start"
   (goto-char speedread-start-start)
   (setq speedread-mark (point))
   ;; kill the words read if we're starting over
   (setq speedread-words-read 0)
-  (setq speedread-continue t)
-  )
+  (setq speedread-continue t))
 
-(defun speedread-help ()
+(defun speedread-help nil
   "Get speedreading command help"
   (interactive)
   (defvar speedread-saved-buffername)
@@ -494,10 +564,9 @@ Can be: left, right, full, center or none."
   (insert "If you wish to retain the other changes permanently,\n")
   (insert "use the command 'speedread-save-changes'.")
   (read-from-minibuffer "Press ENTER to leave help screen")     
-  (switch-to-buffer speedread-saved-buffername)
-  )
+  (switch-to-buffer speedread-saved-buffername))
 
-(defun speedread-save-changes ()
+(defun speedread-save-changes nil
   "save all customization variables changed this Emacs session"
   (interactive)
   (if (yes-or-no-p "REALLY overwrite all saved speedread settings? ")
@@ -507,19 +576,13 @@ Can be: left, right, full, center or none."
 	(customize-save-variable 'speedread-font-size-scale-factor speedread-font-size-scale-factor)
 	(customize-save-variable 'speedread-number-display-lines-in-top-window speedread-number-display-lines-in-top-window)
 	(customize-save-variable 'speedread-final-delay-milliseconds 'speedread-final-delay-milliseconds)
-	(customize-save-variable 'speedread-end-sentence-delay-milliseconds 'speedread-end-sentence-delay-milliseconds)
-	)))
+	(customize-save-variable 'speedread-end-sentence-delay-milliseconds 'speedread-end-sentence-delay-milliseconds))))
 
-;; FUNCTIONS ADDED BY ME
-;; Ben Veal 22/09/08
-
-(defun speedread-toggle-pause ()
+(defun speedread-toggle-pause nil
   "toggle pausing of speedread"
-
   (setq speedread-time-used (+ speedread-time-used
 			       (/ (- (float-time) speedread-time-now) 60)))
   (setq speedread-time-now (float-time))
-
   (setq speedread-continue (not speedread-continue))
   (while  (not speedread-continue)
     ;; show stats and prompt, and also process command input
@@ -541,26 +604,20 @@ Can be: left, right, full, center or none."
 	      (if (equal keyinput 'up) (setq keyinput 253)
 		(if (equal keyinput 'down) (setq keyinput 252))))))
       (funcall (aref speedread-command-vector keyinput)))
-
     ;; flush extra input
-    (while (input-pending-p) (read-event))
-    )
-  )
+    (while (input-pending-p) (read-event))))
 
-(defun speedread-next-line ()
+(defun speedread-next-line nil
   "move to next line"
   (next-line)
-  (redisplay)
-  )
+  (redisplay))
 
-(defun speedread-previous-line ()
+(defun speedread-previous-line nil
   "move to previous line"
   (previous-line)
-  (redisplay)
-  )
+  (redisplay))
 
-
-(defun speedread-get-next-flash-line ()
+(defun speedread-get-next-flash-line nil
   "Get next line of flash text. from buffer starting from point.
 Returns list containing flash line and number of words read."
   (setq speedread-mark (point))
@@ -568,7 +625,6 @@ Returns list containing flash line and number of words read."
 	(speedread-flash-line nil)
 	(speedread-end-sentence nil)
 	speedread-current-word)
-
     (while (and (< (length speedread-flash-line) speedread-chars) 
 		(not speedread-end-sentence)
 		(search-forward-regexp "\\(\\s-\\|\n\\)+" nil t))
@@ -582,11 +638,9 @@ Returns list containing flash line and number of words read."
 	    (if (< (length speedread-current-word) 1) nil
 	      (string-match speedread-end-sentence-regexp speedread-current-word)))
       (setq speedread-mark (point)))
-
     ;; remove surrounding whitespace and newlines
     (setq speedread-flash-line 
 	  (replace-regexp-in-string "^\\(\\s-\\|\n\\)+\\|\\(\\s-\\|\n\\)+$" "" speedread-flash-line))
-
     ;; print flash line to speedread buffer
     (with-current-buffer speedread-buffer-name 
       (erase-buffer)
@@ -599,14 +653,11 @@ Returns list containing flash line and number of words read."
       (justify-current-line speedread-text-justification nil t))
     ;; update display
     (redisplay)
-
     ;; return flash line, number of words read, 
     ;; and indicate if we have reached the end of a sentence
-    (list speedread-flash-line speedread-words-recent speedread-end-sentence)
-    )
-  )
+    (list speedread-flash-line speedread-words-recent speedread-end-sentence)))
 
-(defun speedread-get-previous-flash-line ()
+(defun speedread-get-previous-flash-line nil
   "get previous line of flash text from buffer starting from point.
 Returns list containing flash line and number of words read."
   (setq speedread-mark (point))
@@ -614,7 +665,6 @@ Returns list containing flash line and number of words read."
 	(speedread-flash-line nil)
 	(speedread-end-sentence nil)
 	speedread-current-word)
-
     ;; don't break on \r or \n, only real spaces or tabs!
     (while (and (< (length speedread-flash-line) speedread-chars) 
 		(not speedread-end-sentence)
@@ -629,11 +679,9 @@ Returns list containing flash line and number of words read."
 	    (if (< (length speedread-current-word) 1) nil
 	      (equal (substring speedread-current-word (- (length speedread-current-word) 1)) ".")))
       (setq speedread-mark (point)))
-
     ;; remove surrounding whitespace and newlines
     (setq speedread-flash-line 
 	  (replace-regexp-in-string "^\\(\\s-\\|\n\\)+\\|\\(\\s-\\|\n\\)+$" "" speedread-flash-line))
-
     ;; print flash line to speedread buffer
     (with-current-buffer speedread-buffer-name 
       (erase-buffer)
@@ -646,14 +694,13 @@ Returns list containing flash line and number of words read."
       (justify-current-line speedread-text-justification nil t))
     ;; update display
     (redisplay)
-
     ;; return flash line and number of words read
-    (list speedread-flash-line speedread-words-recent)
-    )
-  )
-
-
-;; END FUNCTIONS ADDED BY ME
-
+    (list speedread-flash-line speedread-words-recent)))
 
 (provide 'speedread)
+
+;; (magit-push)
+;; (yaoddmuse-post "EmacsWiki" "speedread.el" (buffer-name) (buffer-string) "update")
+
+;;; speedread.el ends here
+
