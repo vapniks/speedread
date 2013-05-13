@@ -77,6 +77,30 @@ Below are complete command list:
 - `speedread-help' : Get speedreading command help
 - `speedread-save-changes' : save all customization variables changed this Emacs session
 
+** Customazable options
+Customizable Options:
+
+Below are customizable option list:
+
+- `speedread-chars' : Minimum characters per flash group (an integer)
+  default = 20
+- `speedread-delay-milliseconds' : Milliseconds of delay between flashes (an integer)
+  default = 300
+- `speedread-end-sentence-delay-milliseconds' : Pause between sentences in milliseconds (an integer)
+  default = 500
+- `speedread-final-delay-milliseconds' : Milliseconds to wait before exiting after reaching end of buffer
+  default = 2000
+- `speedread-top-window-size' : How much of the frame to use for displaying the original buffer whilst speedreading.
+  default = 5
+- `speedread-font-size-scale-factor' : Scale factor for size of font
+  default = 2.0
+- `speedread-text-justification' : Justification of text in speedread buffer.
+  default = (quote center)
+- `speedread-end-sentence-regexp' : Regular expression to match with end of sentence words.
+  default = "\\(\\.\\|\\:\\)\\(\n\\|>\\|)\\|'\\|\"\\)*$"
+
+All of the above can customized by:
+M-x customize-group RET speedread RET
 ** Comments
 
 The parameters 'out of the box' tend to result in roughly 600 words
