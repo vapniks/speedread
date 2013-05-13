@@ -77,7 +77,7 @@ Below are complete command list:
 - `speedread-help' : Get speedreading command help
 - `speedread-save-changes' : save all customization variables changed this Emacs session
 
-** Customazable options
+** Customisable options
 Customizable Options:
 
 Below are customizable option list:
